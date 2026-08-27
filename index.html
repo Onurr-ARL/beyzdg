@@ -35,7 +35,7 @@
         /* 1. GİRİŞ EKRANI (HEDİYENİ AÇ) */
         #start-screen {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100dvh;
             background: var(--bg-color);
             z-index: 1000;
             display: flex;
@@ -66,7 +66,7 @@
         /* 2. EKRAN ÇEVİR VİDEOSU EKRANI */
         #intro-video-screen {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100dvh;
             background: #000;
             z-index: 900;
             display: none;
@@ -82,50 +82,54 @@
         /* 3. ANA YATAY SLAYT EKRANI */
         #slideshow-screen {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100dvh;
             display: none;
             flex-direction: row; /* Ekranı yan yana böler */
             background: #080808;
             z-index: 800;
             opacity: 0;
             transition: opacity 1s ease;
-            cursor: pointer; /* Tıklanabilir olduğunu belli eder */
+            cursor: pointer;
         }
 
         /* SOL TARAF - FOTOĞRAF / VİDEO */
         .media-side {
             width: 50vw;
-            height: 100vh;
+            height: 100dvh;
             position: relative;
             background: #080506;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
+        
+        /* ÇÖZÜM: Medya kırpılmasını engelleyen yapı */
         .media-item {
-            width: 85%; /* Ekrana tam yapışmaz, küçültülmüş */
-            height: 85%;
-            object-fit: cover;
-            border-radius: 20px; /* Estetik kavisler */
+            max-width: 90%; 
+            max-height: 85dvh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
             opacity: 0;
             transition: opacity 0.8s ease;
             filter: grayscale(10%) contrast(110%);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(140, 38, 51, 0.15);
-            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(140, 38, 51, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.15);
         }
         .media-item.active { opacity: 1; }
 
         /* SAĞ TARAF - YAZI VE KRALİYET DESENLERİ */
         .text-side {
             width: 50vw;
-            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 5%;
-            background: radial-gradient(circle at center, #14080a 0%, #050304 100%); /* Zengin Bordo-Siyah Geçişi */
+            background: radial-gradient(circle at center, #14080a 0%, #050304 100%);
             position: relative;
         }
 
@@ -133,14 +137,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 85%;
+            width: 90%;
         }
         
         /* ⚜️ Desenleri CSS */
         .ornament {
             color: rgba(212, 175, 55, 0.3);
-            font-size: 1.5rem;
-            margin: 25px 0;
+            font-size: 1.2rem;
+            margin: 20px 0;
             letter-spacing: 10px;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
             opacity: 0;
@@ -152,7 +156,7 @@
             transform: translateY(0);
         }
         .ornament span {
-            font-size: 2rem;
+            font-size: 1.8rem;
             vertical-align: middle;
             margin: 0 10px;
         }
@@ -160,8 +164,8 @@
         /* Fotoğraf Sözleri CSS */
         .slide-text {
             font-family: "Georgia", serif;
-            font-size: 1.6rem;
-            line-height: 1.7;
+            font-size: 1.5rem;
+            line-height: 1.6;
             color: var(--text-main);
             text-align: center;
             opacity: 0;
@@ -176,9 +180,9 @@
         /* GEÇMEK İÇİN BASINIZ YAZISI */
         .skip-hint {
             position: absolute;
-            bottom: 25px;
-            right: 35px;
-            font-size: 0.85rem;
+            bottom: 20px;
+            right: 30px;
+            font-size: 0.8rem;
             color: rgba(255,255,255,0.4);
             letter-spacing: 1.5px;
             font-family: sans-serif;
@@ -191,26 +195,43 @@
             100% { opacity: 0.2; }
         }
 
-        /* 4. MUM & FİNAL EKRANI */
+        /* 4. MUM & FİNAL EKRANI (YATAY / YAN DÜZEN) */
         #candle-screen {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100dvh;
             background: radial-gradient(circle at center, #1a0f12 0%, #050304 100%);
             z-index: 850;
             display: none;
+            flex-direction: row; /* Dikeyden yataya geçirildi */
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+        
+        .candle-left, .candle-right {
+            width: 50vw;
+            height: 100dvh;
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 1s ease;
+            position: relative;
+        }
+
+        /* Mum Yazıları */
+        #candle-texts {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 25px; /* Biraz aşağıya çekildi */
         }
         .fast-reveal {
             opacity: 0;
             transform: translateY(15px);
             transition: opacity 0.6s ease, transform 0.6s ease;
             font-family: "Georgia", serif;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            font-size: 1.7rem;
+            margin-bottom: 15px;
             text-align: center;
         }
         .fast-reveal.active { opacity: 1; transform: translateY(0); }
@@ -218,12 +239,10 @@
         /* Zarif Mum Çizimi */
         .candle-container {
             position: relative;
-            margin: 40px 0;
+            margin-top: 40px; /* Mum aşağıya çekildi */
             display: flex;
             flex-direction: column;
             align-items: center;
-            opacity: 0;
-            transition: opacity 1s ease;
         }
         .candle-stick {
             width: 25px;
@@ -251,20 +270,25 @@
             100% { transform: translateX(-50%) scale(1.05) rotate(-2deg); opacity: 1; }
         }
 
+        /* ÇÖZÜM: Veda Yazıları - Ekranın tamamını kaplayacak ve tam ortaya gelecek */
         #final-messages {
-            margin-top: 30px;
-            display: flex;
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100dvh;
+            display: none; /* Mumu üfleyince flex olacak */
             flex-direction: column;
+            justify-content: center;
             align-items: center;
+            z-index: 900;
         }
         .final-text {
             font-family: "Georgia", serif;
             font-size: 2.2rem;
             color: var(--gold);
             opacity: 0;
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Aralıklar daraltıldı, daha yukarıda/ortada duracak */
             transition: opacity 0.8s ease;
             text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            text-align: center;
         }
     </style>
 </head>
@@ -290,22 +314,33 @@
 
     <!-- 4. MUM VE FİNAL -->
     <div id="candle-screen">
-        <div class="fast-reveal" id="c-text-1">Ve şimdi...</div>
-        <div class="fast-reveal" id="c-text-2">Gözlerini kapat.</div>
-        <div class="fast-reveal" id="c-text-3">Bir dilek tut. ✨</div>
         
-        <div class="candle-container" id="candle-box">
-            <div class="candle-flame" id="flame"></div>
-            <div class="candle-stick"></div>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #777;">Söndürmek için muma dokun</div>
+        <!-- Sol Taraf: Mum Yazıları -->
+        <div class="candle-left">
+            <div id="candle-texts">
+                <div class="fast-reveal" id="c-text-1">Ve şimdi...</div>
+                <div class="fast-reveal" id="c-text-2">Gözlerini kapat.</div>
+                <div class="fast-reveal" id="c-text-3">Bir dilek tut. ✨</div>
+            </div>
         </div>
 
+        <!-- Sağ Taraf: Mum -->
+        <div class="candle-right">
+            <div class="candle-container" id="candle-box">
+                <div class="candle-flame" id="flame"></div>
+                <div class="candle-stick"></div>
+                <div style="margin-top: 25px; font-size: 0.85rem; color: #777;">Söndürmek için muma dokun</div>
+            </div>
+        </div>
+
+        <!-- Mum Söndükten Sonra Ortada Çıkacak Veda Yazıları -->
         <div id="final-messages">
             <div class="final-text" id="f-text-1">İyi ki doğdun sevgilim.</div>
             <div class="final-text" id="f-text-2">İyi ki varsın.</div>
             <div class="final-text" id="f-text-3">Seni çok seviyorum. ❤️</div>
-            <div class="final-text" id="f-text-4" style="font-size: 1.2rem; color: #a3a3a3; margin-top: 40px;">— Onur</div>
+            <div class="final-text" id="f-text-4" style="font-size: 1.2rem; color: #a3a3a3; margin-top: 30px;">— Onur</div>
         </div>
+        
     </div>
 
     <script>
@@ -318,25 +353,25 @@
         
         const slideData = [
             // --- 1. BÖLÜM (Foto 1-7 | Müzik 1 Çalar) ---
-            { type: 'image', src: 'foto1.jpg', music: 'muzik1.mp3', text: 'Bilmiyordum ama o gün attığım mesaj, hayatımın en güzel başlangıçlarından biriymiş.' },
-            { type: 'image', src: 'foto2.jpg', music: 'muzik1.mp3', text: 'İlk buluşmamızın küçücük bir hatırası, benim için kocaman bir anıya dönüştü.' },
-            { type: 'image', src: 'foto3.jpg', music: 'muzik1.mp3', text: 'Sana verdiğim her çiçekte, sana olan sevgimin birazını anlatmaya çalışıyorum.' },
-            { type: 'image', src: 'foto4.jpg', music: 'muzik1.mp3', text: 'İlk çiçeğimizi beraber yaptık, ama benim için en güzeli onun seninle yapılmış olmasıydı' },
-            { type: 'image', src: 'foto5.jpg', music: 'muzik1.mp3', text: 'Birlikte yaptığımız her şeyin ayrı bir güzelliği var, tıpkı senin gibi.' },
-            { type: 'image', src: 'foto6.jpg', music: 'muzik1.mp3', text: 'Seninle sıradan bir şeyi bile beraber yaptığımızda, benim için güzel bir anıya dönüşüyor"' },
-            { type: 'image', src: 'foto7.jpg', music: 'muzik1.mp3', text: 'Belki küçük bir kaktüs, ama arkasında beraber geçirdiğimiz güzel bir an var. ❤️' },
+            { type: 'image', src: 'foto1.jpg', music: 'muzik2.mp3', text: 'Bilmiyordum ama o gün attığım mesaj, hayatımın en güzel başlangıçlarından biriymiş.' },
+            { type: 'image', src: 'foto2.jpg', music: 'muzik2.mp3', text: 'İlk buluşmamızın küçücük bir hatırası, benim için kocaman bir anıya dönüştü.' },
+            { type: 'image', src: 'foto3.jpg', music: 'muzik2.mp3', text: 'Sana verdiğim her çiçekte, sana olan sevgimin birazını anlatmaya çalışıyorum.' },
+            { type: 'image', src: 'foto4.jpg', music: 'muzik2.mp3', text: 'İlk çiçeğimizi beraber yaptık, ama benim için en güzeli onun seninle yapılmış olmasıydı' },
+            { type: 'image', src: 'foto5.jpg', music: 'muzik2.mp3', text: 'Birlikte yaptığımız her şeyin ayrı bir güzelliği var, tıpkı senin gibi.' },
+            { type: 'image', src: 'foto6.jpg', music: 'muzik2.mp3', text: 'Seninle sıradan bir şeyi bile beraber yaptığımızda, benim için güzel bir anıya dönüşüyor"' },
+            { type: 'image', src: 'foto7.jpg', music: 'muzik2.mp3', text: 'Belki küçük bir kaktüs, ama arkasında beraber geçirdiğimiz güzel bir an var. ❤️' },
             
             // --- 2. BÖLÜM (Ara Video & Foto 8-15 | Müzik 2 Çalar) ---
-            { type: 'video', src: 'video1.mp4', music: 'muzik1.mp3', text: 'Sen benim en güzel tesadüfüm, en kıymetli kararımsın...' },
+            { type: 'video', src: 'video1.mp4', music: 'muzik2.mp3', text: 'Sen benim en güzel tesadüfüm, en kıymetli kararımsın...' },
             
-            { type: 'image', src: 'foto8.jpg', music: 'muzik1.mp3', text: 'Senin en güzel hallerinden biri de hiçbir şeyden habersiz, kendi halinde mutlu olduğun anlar.' },
-            { type: 'image', src: 'foto9.jpg', music: 'muzik1.mp3', text: 'Aynı tişörtleri giydiğimiz gün, çocukça bir şey yapmanın bile seninle ne kadar güzel olduğunu anladım. 🕷️❤️' },
-            { type: 'image', src: 'foto10.jpg', music: 'muzik1.mp3', text: 'Seni çizerken fark ettim; seni kağıda sığdırmak kolaymış da, sana olan sevgimi hiçbir yere sığdırmak mümkün değilmiş.' },
-            { type: 'image', src: 'foto11.jpg', music: 'muzik1.mp3', text: 'Dört ay geçti ama sana baktığımda hâlâ ilk günkü gibi içim kıpır kıpır oluyor.' },
-            { type: 'image', src: 'foto12.jpg', music: 'muzik1.mp3', text: 'Zaman geçiyor ama benim en sevdiğim zaman, seninle geçirdiğim zaman.' },
-            { type: 'image', src: 'foto13.jpg', music: 'muzik1.mp3', text: 'Filmi hatırlamıyorum belki ama seninle yan yana olduğum o anı çok iyi hatırlıyorum' },
-            { type: 'image', src: 'foto14.jpg', music: 'muzik1.mp3', text: 'Sana her yaklaştığımda dünyadaki bütün sesler biraz olsun susuyor gibi.' },
-            { type: 'image', src: 'foto15.jpg', music: 'muzik1.mp3', text: 'Ve bu fotoğraf... Bizim hikâyemizin en güzel karelerinden biri. Daha nice fotoğrafa, nice anıya, nice ‘biz’lere. ❤️' },
+            { type: 'image', src: 'foto8.jpg', music: 'muzik2.mp3', text: 'Senin en güzel hallerinden biri de hiçbir şeyden habersiz, kendi halinde mutlu olduğun anlar.' },
+            { type: 'image', src: 'foto9.jpg', music: 'muzik2.mp3', text: 'Aynı tişörtleri giydiğimiz gün, çocukça bir şey yapmanın bile seninle ne kadar güzel olduğunu anladım. 🕷️❤️' },
+            { type: 'image', src: 'foto10.jpg', music: 'muzik2.mp3', text: 'Seni çizerken fark ettim; seni kağıda sığdırmak kolaymış da, sana olan sevgimi hiçbir yere sığdırmak mümkün değilmiş.' },
+            { type: 'image', src: 'foto11.jpg', music: 'muzik2.mp3', text: 'Dört ay geçti ama sana baktığımda hâlâ ilk günkü gibi içim kıpır kıpır oluyor.' },
+            { type: 'image', src: 'foto12.jpg', music: 'muzik2.mp3', text: 'Zaman geçiyor ama benim en sevdiğim zaman, seninle geçirdiğim zaman.' },
+            { type: 'image', src: 'foto13.jpg', music: 'muzik2.mp3', text: 'Filmi hatırlamıyorum belki ama seninle yan yana olduğum o anı çok iyi hatırlıyorum' },
+            { type: 'image', src: 'foto14.jpg', music: 'muzik2.mp3', text: 'Sana her yaklaştığımda dünyadaki bütün sesler biraz olsun susuyor gibi.' },
+            { type: 'image', src: 'foto15.jpg', music: 'muzik2.mp3', text: 'Ve bu fotoğraf... Bizim hikâyemizin en güzel karelerinden biri. Daha nice fotoğrafa, nice anıya, nice ‘biz’lere. ❤️' },
             
             // --- 3. BÖLÜM (Son Video | Müzik 3 Çalar) ---
             { type: 'video', src: 'video2.mp4', music: 'muzik3.mp3', text: 'Ve bu hikaye daha yeni başlıyor sevgilim...' }
@@ -379,12 +414,12 @@
                     playPromise.catch(error => {
                         console.warn("Ekrancevir videosu bulunamadı, siteye geçiliyor...");
                         videoFailed = true;
-                        setTimeout(startMainSite, 2000); // Video yoksa 2 saniyede geçer
+                        setTimeout(startMainSite, 2000); 
                     });
                 }
                 
                 ekrancevirVideo.addEventListener('ended', () => {
-                    if(!videoFailed) setTimeout(startMainSite, 3000); // Video biterse 3 saniye sonra geçer
+                    if(!videoFailed) setTimeout(startMainSite, 3000);
                 });
 
             }, 500);
@@ -429,8 +464,8 @@
                 mediaEl.src = data.src;
                 mediaEl.className = 'media-item';
                 mediaEl.autoplay = true;
-                mediaEl.loop = true; // Video bitince başa sarar
-                mediaEl.muted = true; // Arkada müzik olduğu için videolar sessizdir
+                mediaEl.loop = true; 
+                mediaEl.muted = true; 
                 mediaEl.setAttribute('playsinline', '');
                 mediaEl.onerror = function() { 
                     this.outerHTML = `<img src="${placeholderImg}" class="media-item active">`;
@@ -502,15 +537,14 @@
             slideshowScreen.style.opacity = '0';
             setTimeout(() => {
                 slideshowScreen.style.display = 'none';
-                candleScreen.style.display = 'flex';
+                candleScreen.style.display = 'flex'; // Yatay moda geçer
                 
                 setTimeout(() => candleScreen.style.opacity = '1', 100);
                 
                 setTimeout(() => document.getElementById('c-text-1').classList.add('active'), 500);
                 setTimeout(() => document.getElementById('c-text-2').classList.add('active'), 1500);
                 setTimeout(() => document.getElementById('c-text-3').classList.add('active'), 2500);
-                setTimeout(() => document.getElementById('candle-box').style.opacity = '1', 3500);
-
+                
             }, 1000);
         }
 
@@ -518,17 +552,27 @@
         flame.addEventListener('click', () => {
             flame.style.display = 'none'; 
             
-            document.getElementById('c-text-1').style.opacity = '0';
-            document.getElementById('c-text-2').style.opacity = '0';
-            document.getElementById('c-text-3').style.opacity = '0';
-            document.getElementById('candle-box').style.opacity = '0';
+            // Mum ve sağdaki-soldaki yazıları şeffaflaştır
+            document.querySelector('.candle-left').style.opacity = '0';
+            document.querySelector('.candle-right').style.opacity = '0';
 
+            // Arka planı iyice karanlık yap
             candleScreen.style.background = "radial-gradient(circle, #100a0b 0%, #050304 100%)";
 
-            setTimeout(() => document.getElementById('f-text-1').style.opacity = '1', 1500);
-            setTimeout(() => document.getElementById('f-text-2').style.opacity = '1', 3000);
-            setTimeout(() => document.getElementById('f-text-3').style.opacity = '1', 4500);
-            setTimeout(() => document.getElementById('f-text-4').style.opacity = '1', 6000);
+            setTimeout(() => {
+                // Her şeyi ekrandan kaldır
+                document.querySelector('.candle-left').style.display = 'none';
+                document.querySelector('.candle-right').style.display = 'none';
+                
+                // Final veda yazılarını tüm ekranı kaplayacak şekilde aç
+                const finalMsgs = document.getElementById('final-messages');
+                finalMsgs.style.display = 'flex';
+                
+                setTimeout(() => document.getElementById('f-text-1').style.opacity = '1', 500);
+                setTimeout(() => document.getElementById('f-text-2').style.opacity = '1', 2000);
+                setTimeout(() => document.getElementById('f-text-3').style.opacity = '1', 3500);
+                setTimeout(() => document.getElementById('f-text-4').style.opacity = '1', 5000);
+            }, 1000);
         });
     </script>
 </body>
