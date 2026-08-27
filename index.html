@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Open Graph Metadata (WhatsApp Önizlemesi İçin) -->
+    <meta property="og:title" content="Beyza ❤️">
+    <meta property="og:description" content="Senin için küçük bir şey hazırladım.">
+    <meta property="og:image" content="final.jpg">
+    <meta property="og:type" content="website">
+
+    <title>İyi ki Doğdun Beyza</title>
+
+    <style>
+        /* TEMEL AYARLAR & RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-color: #050505; /* Çok koyu, minimalist arka plan */
+            --bg-glow: #0a1010; /* Hafif, zarif bir derinlik */
+            --text-main: #fdfbf7;
+            --text-muted: #9e9e9e;
+            --accent: #8c2633;
+            --gold: #d4af37;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, var(--bg-glow) 0%, var(--bg-color) 100%);
+            background-attachment: fixed;
+        }
+
+        /* MOBİL ODAKLI KONTEYNER */
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+            background: transparent;
+            min-height: 100dvh;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        /* MÜZİK KONTROLÜ */
+        #music-toggle {
+            position: fixed;
+            top: calc(20px + var(--safe-top));
+            right: 20px;
+            z-index: 100;
+            background: rgba(10,10,10,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        #music-toggle.playing {
+            color: var(--gold);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        /* GİRİŞ EKRANI */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease, filter 1.5s ease;
+        }
+        
+        .intro-name {
+            font-family: "Georgia", serif;
+            font-size: 2.2rem;
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            opacity: 0;
+            animation: fadeIn 2s forwards 0.5s;
+        }
+        
+        .intro-sub {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeIn 2s forwards 1.5s;
+            margin-bottom: 50px;
+        }
+
+        .btn-start {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main);
+            padding: 16px 45px;
+            border-radius: 30px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeIn 2s forwards 2.5s;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .btn-start:active { background: rgba(255,255,255,0.05); transform: scale(0.96); }
+
+        /* ANA İÇERİK */
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        section {
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 25px;
+            text-align: center;
+            padding-top: calc(40px + var(--safe-top));
+            padding-bottom: calc(40px + var(--safe-bottom));
+        }
+
+        /* ORTAK ANİMASYON SINIFLARI */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* BÖLÜM 1: ZAMAN */
+        .time-title {
+            font-family: "Georgia", serif;
+            font-size: 3.2rem;
+            font-weight: normal;
+            margin-bottom: 15px;
+            color: var(--gold);
+        }
+        .time-sub {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+        .time-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 85%;
+            font-style: italic;
+        }
+
+        /* BÖLÜM 2: FOTOĞRAF HİKAYESİ */
+        .memory-card {
+            width: 100%;
+            margin-bottom: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .memory-img-wrapper {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            margin-bottom: 25px;
+            background: #111;
+        }
+        .memory-img-wrapper img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            filter: grayscale(15%) contrast(115%);
+        }
+        .memory-text {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            padding: 0 10px;
+            max-width: 95%;
+        }
+
+        /* BÖLÜM: SİNEMATİK VİDEO */
+        .video-wrapper {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            margin-bottom: 25px;
+            background: #111;
+            position: relative;
+        }
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            filter: brightness(0.85) contrast(1.1);
+        }
+        /* Videonun üzerine çok hafif romantik bir filtre */
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
+        }
+
+        /* BÖLÜM 3: NEDEN SEN? */
+        .reason-title {
+            font-size: 1.1rem;
+            margin-bottom: 60px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+        .reason-item {
+            font-family: "Georgia", serif;
+            font-size: 1.5rem;
+            margin-bottom: 35px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+            color: var(--text-main);
+        }
+        .reason-item.active { opacity: 1; transform: translateY(0); }
+        
+        .reason-finale {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-top: 70px;
+            font-family: "Georgia", serif;
+            opacity: 0;
+            transition: opacity 2.5s ease;
+        }
+
+        /* BÖLÜM 4: KÜÇÜK ETKİLEŞİM */
+        .interaction-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+            cursor: pointer;
+            margin-top: 50px;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+        .interaction-btn:active { color: var(--text-main); }
+        
+        #hidden-birthday-message {
+            display: none;
+            margin-top: 50px;
+        }
+        .smile-text {
+            font-size: 2.2rem;
+            font-family: "Georgia", serif;
+            margin-top: 40px;
+            color: var(--text-main);
+            text-shadow: 0 0 20px rgba(255,255,255,0.15);
+        }
+
+        /* BÖLÜM 5: MUM & DİLEK */
+        .candle-container {
+            position: relative;
+            margin: 70px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .candle-stick {
+            width: 30px;
+            height: 140px;
+            background: linear-gradient(to right, #d4d4d4, #fdfbf7, #b0b0b0);
+            border-radius: 4px;
+            position: relative;
+            box-shadow: inset -5px 0 10px rgba(0,0,0,0.15);
+        }
+        .candle-wick {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 14px;
+            background: #222;
+            border-radius: 2px;
+        }
+        .candle-flame {
+            position: absolute;
+            top: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 45px;
+            background: #ff9d00;
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 15px #ff9d00, 0 0 30px #ff9d00, 0 0 50px #ff9d00, 0 0 70px #ff3700;
+            animation: flicker 0.5s infinite alternate;
+            cursor: pointer;
+            z-index: 10;
+        }
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+            100% { transform: translateX(-50%) scale(1.05) rotate(-3deg); opacity: 1; }
+        }
+        .candle-hint { margin-top: 30px; color: var(--text-muted); font-size: 0.85rem; letter-spacing: 1px; }
+        
+        /* PARÇACIKLAR */
+        .particles-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .particle {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        /* BÖLÜM 6: FİNAL */
+        #final {
+            justify-content: flex-start;
+            padding-top: calc(70px + var(--safe-top));
+        }
+        .final-img {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            margin-bottom: 50px;
+        }
+        .final-text {
+            font-family: "Georgia", serif;
+            font-size: 1.9rem;
+            margin-bottom: 18px;
+            opacity: 0;
+            color: var(--text-main);
+        }
+        .final-signature {
+            margin-top: 50px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-style: italic;
+            opacity: 0;
+            letter-spacing: 1px;
+        }
+        .epilogue {
+            margin-top: 70px;
+            font-size: 0.85rem;
+            color: #666;
+            opacity: 0;
+            line-height: 1.6;
+        }
+        
+        /* SÜRPRİZ MESAJ */
+        .easter-egg-msg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(5,5,5,0.9);
+            padding: 35px 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+            width: 85%;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+        .easter-egg-msg.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+        
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MÜZİK OYNATICI -->
+    <audio id="bg-music" loop preload="auto"></audio>
+    
+    <div class="app-container">
+        <!-- MÜZİK KONTROL BUTONU -->
+        <div id="music-toggle">♫</div>
+
+        <!-- GİRİŞ EKRANI -->
+        <div id="intro-screen">
+            <h1 class="intro-name" id="intro-name-el">BEYZA</h1>
+            <p class="intro-sub">Senin için küçük bir şey hazırladım.</p>
+            <button class="btn-start" id="start-btn">Başlayalım ❤️</button>
+        </div>
+
+        <!-- ANA İÇERİK (Scroll) -->
+        <div id="main-content">
+            
+            <!-- BÖLÜM 1: ZAMAN -->
+            <section id="section-time">
+                <h2 class="time-title reveal" id="time-val">0 Ay 0 Gün</h2>
+                <p class="time-sub reveal">Seninle geçen zaman.</p>
+                <p class="time-desc reveal">Takvimde belki sadece birkaç ay...<br>ama benim için içine kocaman bir ömür, yüzlerce güzel anı sığdı.</p>
+            </section>
+
+            <!-- BÖLÜM 2: ANILAR -->
+            <div id="memories-container"></div>
+
+            <!-- BÖLÜM 2.5: SİNEMATİK VİDEO -->
+            <section id="section-video" class="memory-card reveal" style="margin-bottom: 40px;">
+                <div class="video-wrapper">
+                    <!-- Video sessiz, otomatik döngüde oynar. Müzik arkadan devam eder. -->
+                    <video id="mem-video" autoplay loop muted playsinline src="video.mp4" onerror="this.style.display='none'"></video>
+                    <div class="video-overlay"></div>
+                </div>
+                <p class="memory-text" style="margin-top: 15px;">Zamanın akmasını hiç istemediğim o anlardan sadece biri...</p>
+            </section>
+
+            <!-- BÖLÜM 3: NEDEN SEN -->
+            <section id="section-reasons">
+                <p class="reason-title reveal">Seni neden sevdiğimi düşündüm...</p>
+                <div id="reasons-list"></div>
+                <p class="reason-finale" id="reason-finale">Sadece sensin.</p>
+            </section>
+
+            <!-- BÖLÜM 4: ETKİLEŞİM -->
+            <section id="section-interaction">
+                <p class="reveal">Şimdi...</p>
+                <button class="interaction-btn reveal" id="one-more-thing-btn">Bir şey daha var...</button>
+                
+                <div id="hidden-birthday-message">
+                    <p class="reveal">Bugün senin doğum günün.</p>
+                    <p class="reveal" style="margin-top:20px;">Ve benim bugün senden tek bir isteğim var.</p>
+                    <p class="smile-text reveal">Gülümse.</p>
+                </div>
+            </section>
+
+            <!-- BÖLÜM 5: MUM -->
+            <section id="section-candle">
+                <p class="reveal">Bir dilek tut. ✨</p>
+                
+                <div class="candle-container reveal">
+                    <div class="candle-flame" id="flame"></div>
+                    <div class="candle-stick">
+                        <div class="candle-wick"></div>
+                    </div>
+                    <p class="candle-hint" id="candle-hint">Sonra muma dokun.</p>
+                </div>
+                
+                <p id="wish-result" style="opacity:0; transition: opacity 2s ease; margin-top:20px; color: var(--gold); font-family: 'Georgia', serif; font-size:1.6rem;">Umarım gerçekleşir.</p>
+            </section>
+
+            <!-- BÖLÜM 6: FİNAL -->
+            <section id="final">
+                <img src="final.jpg" alt="Biz" class="final-img reveal" id="final-img-el" onerror="this.style.display='none'">
+                
+                <p class="final-text" id="ft1">İyi ki doğdun sevgilim.</p>
+                <p class="final-text" id="ft2">İyi ki varsın.</p>
+                <p class="final-text" id="ft3">Seni çok seviyorum. ❤️</p>
+                
+                <p class="final-signature" id="fsig">— Onur</p>
+                
+                <div class="epilogue reveal" id="epilogue-area">
+                    <p>Bu daha başlangıç.</p>
+                    <p>Birlikte yaşayacağımız daha çok güzel anı var.</p>
+                </div>
+            </section>
+
+        </div>
+        
+        <!-- PARÇACIK EFEKT KATMANI -->
+        <div class="particles-layer" id="particles"></div>
+        
+        <!-- SÜRPRİZ MESAJ -->
+        <div class="easter-egg-msg" id="secret-msg">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">Tamam, artık gerçekten söyleyebilirim...</p>
+            <p style="font-family: 'Georgia', serif; font-size: 1.6rem; color: var(--gold);">İyi ki doğdun aşkım. ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        /* =========================================
+           1. AYARLAR (TÜM DOSYALAR AYNI KLASÖRDE)
+           ========================================= */
+        const CONFIG = {
+            girlfriendName: "Beyza",
+            myName: "Onur",
+            relationshipDuration: "4 Ay 12 Gün",
+            musicUrl: "music.mp3",
+            finalPhoto: "final.jpg"
+        };
+
+        const memories = [
+            {
+                image: "foto1.jpg",
+                text: "Lise sıralarında başlayan o yarım kalan hikayenin, yıllar sonra hayatımın en güzel gerçeğine dönüşmesi..."
+            },
+            {
+                image: "foto2.jpg",
+                text: "Burdur'dan Aksaray'a uzanan yollarda, aramızdaki hiçbir mesafenin kalbime engel olamayacağını bana hissettirdiğin o gün."
+            },
+            {
+                image: "foto3.jpg",
+                text: "Beraber dinlediğimiz o şarkılardaki gibi... Seninle geçirdiğim en sıradan anın bile içimi nasıl huzurla doldurduğu gerçeği."
+            }
+        ];
+
+        const reasons = [
+            "Gülüşün.",
+            "Sesini duyduğum an içimi kaplayan o his.",
+            "Yanımdayken hissettirdiğin o eşsiz huzur.",
+            "Beraber saatlerce saçmalayabilmemiz.",
+            "Ve senin yanında tamamen kendim olabilmem."
+        ];
+
+
+        /* =========================================
+           2. SİTE OLUŞTURMA VE MANTIK
+           ========================================= */
+        
+        document.getElementById("intro-name-el").textContent = CONFIG.girlfriendName.toUpperCase();
+        document.getElementById("bg-music").src = CONFIG.musicUrl;
+
+        // Anıları DOM'a Ekle
+        const memContainer = document.getElementById("memories-container");
+        memories.forEach((mem) => {
+            const section = document.createElement("section");
+            section.className = "memory-card reveal";
+            section.innerHTML = `
+                <div class="memory-img-wrapper">
+                    <img src="${mem.image}" alt="Anı" onerror="this.style.display='none'">
+                </div>
+                <p class="memory-text">${mem.text}</p>
+            `;
+            memContainer.appendChild(section);
+        });
+
+        // Nedenleri DOM'a Ekle
+        const reasonsList = document.getElementById("reasons-list");
+        reasons.forEach((reason) => {
+            const p = document.createElement("p");
+            p.className = "reason-item";
+            p.textContent = reason;
+            reasonsList.appendChild(p);
+        });
+
+
+        /* =========================================
+           3. ETKİLEŞİMLER VE ANİMASYONLAR
+           ========================================= */
+
+        const startBtn = document.getElementById("start-btn");
+        const introScreen = document.getElementById("intro-screen");
+        const mainContent = document.getElementById("main-content");
+        const musicToggle = document.getElementById("music-toggle");
+        const bgMusic = document.getElementById("bg-music");
+
+        // Başlangıç Butonu
+        startBtn.addEventListener("click", () => {
+            bgMusic.play().then(() => {
+                musicToggle.style.display = "flex";
+                musicToggle.classList.add("playing");
+            }).catch(e => console.log("Müzik autoplay engellendi."));
+
+            introScreen.style.transform = "scale(1.05)";
+            introScreen.style.opacity = "0";
+            introScreen.style.filter = "blur(15px)";
+            
+            setTimeout(() => {
+                introScreen.style.display = "none";
+                mainContent.style.display = "block";
+                
+                setTimeout(() => {
+                    mainContent.style.opacity = "1";
+                    animateTime();
+                }, 50);
+            }, 1500);
+        });
+
+        // Müzik Kontrolü
+        musicToggle.addEventListener("click", () => {
+            if(bgMusic.paused) {
+                bgMusic.play();
+                musicToggle.classList.add("playing");
+            } else {
+                bgMusic.pause();
+                musicToggle.classList.remove("playing");
+            }
+        });
+
+        // Scroll Animasyonları
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                    
+                    if(entry.target.id === "section-reasons") {
+                        const items = document.querySelectorAll(".reason-item");
+                        items.forEach((item, index) => {
+                            setTimeout(() => {
+                                item.classList.add("active");
+                            }, index * 1100);
+                        });
+                        setTimeout(() => {
+                            document.getElementById("reason-finale").style.opacity = "1";
+                        }, items.length * 1100 + 800);
+                    }
+                    
+                    if(entry.target.id === "final") {
+                        setTimeout(() => document.getElementById("ft1").style.opacity = "1", 1000);
+                        setTimeout(() => document.getElementById("ft2").style.opacity = "1", 2800);
+                        setTimeout(() => document.getElementById("ft3").style.opacity = "1", 4500);
+                        setTimeout(() => document.getElementById("fsig").style.opacity = "1", 6000);
+                    }
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        revealObserver.observe(document.getElementById("section-reasons"));
+        revealObserver.observe(document.getElementById("final"));
+
+        // Zaman Sayacı
+        function animateTime() {
+            const timeEl = document.getElementById("time-val");
+            let frames = 0;
+            const maxFrames = 30;
+            const interval = setInterval(() => {
+                frames++;
+                const r1 = Math.floor(Math.random() * 12);
+                const r2 = Math.floor(Math.random() * 30);
+                timeEl.textContent = `${r1} Ay ${r2} Gün`;
+                
+                if(frames >= maxFrames) {
+                    clearInterval(interval);
+                    timeEl.textContent = CONFIG.relationshipDuration;
+                }
+            }, 60);
+        }
+
+        // Bir şey daha var butonu
+        const moreBtn = document.getElementById("one-more-thing-btn");
+        const hiddenMsg = document.getElementById("hidden-birthday-message");
+        moreBtn.addEventListener("click", () => {
+            moreBtn.style.display = "none";
+            hiddenMsg.style.display = "block";
+            setTimeout(() => {
+                hiddenMsg.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+            }, 50);
+        });
+
+        // Mum Söndürme
+        const flame = document.getElementById("flame");
+        const hint = document.getElementById("candle-hint");
+        const wishResult = document.getElementById("wish-result");
+        
+        flame.addEventListener("click", () => {
+            flame.style.display = "none";
+            hint.style.opacity = "0";
+            
+            createParticles();
+            
+            // Ekranı hafif aydınlatma efekti
+            document.body.style.backgroundImage = "radial-gradient(circle at 50% 50%, #151a1a 0%, #050505 100%)";
+            
+            setTimeout(() => {
+                wishResult.style.opacity = "1";
+            }, 1200);
+        });
+
+        function createParticles() {
+            const layer = document.getElementById("particles");
+            const rect = document.querySelector(".candle-stick").getBoundingClientRect();
+            
+            for(let i=0; i<35; i++) {
+                const p = document.createElement("div");
+                p.className = "particle";
+                
+                const startX = rect.left + (rect.width / 2) + (Math.random() * 30 - 15);
+                const startY = rect.top;
+                
+                p.style.left = startX + "px";
+                p.style.top = startY + "px";
+                
+                const tx = (Math.random() * 200 - 100) + "px";
+                const ty = (Math.random() * -250 - 50) + "px";
+                
+                if(Math.random() > 0.6) p.style.background = "#fff";
+                
+                layer.appendChild(p);
+                
+                p.animate([
+                    { transform: `translate(0, 0) scale(1)`, opacity: 1 },
+                    { transform: `translate(${tx}, ${ty}) scale(0.5)`, opacity: 0 }
+                ], {
+                    duration: 1500 + Math.random() * 1200,
+                    easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                    fill: "forwards"
+                });
+                
+                setTimeout(() => p.remove(), 3000);
+            }
+        }
+
+        // Final Sürprizi
+        let clickCount = 0;
+        const epilogueArea = document.getElementById("epilogue-area");
+        const secretMsg = document.getElementById("secret-msg");
+        
+        epilogueArea.addEventListener("click", () => {
+            clickCount++;
+            if(clickCount === 3) {
+                secretMsg.classList.add("show");
+                
+                for(let i=0; i<25; i++){
+                    const s = document.createElement("div");
+                    s.className = "particle";
+                    s.style.left = Math.random() * window.innerWidth + "px";
+                    s.style.top = Math.random() * window.innerHeight + "px";
+                    document.getElementById("particles").appendChild(s);
+                    
+                    s.animate([
+                        { transform: `translateY(0) scale(1)`, opacity: 1 },
+                        { transform: `translateY(-100px) scale(0)`, opacity: 0 }
+                    ], { duration: 2500, fill: "forwards" });
+
+                    setTimeout(() => s.remove(), 3000);
+                }
+                
+                setTimeout(() => {
+                    secretMsg.classList.remove("show");
+                    clickCount = 0;
+                }, 4000);
+            }
+        });
+
+    </script>
+</body>
+</html>
