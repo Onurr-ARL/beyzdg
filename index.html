@@ -401,6 +401,17 @@
 
         /* BAŞLATMA */
         startBtn.addEventListener('click', () => {
+            
+            // === MOBİL SES KİLİDİ ÇÖZÜMÜ ===
+            // Telefonlarda müziğin otomatik başlaması için, kullanıcı butona 
+            // tıkladığı an sesi yükleyip çok kısa tetikliyoruz (kilidi kırıyoruz).
+            bgMusic.src = slideData[0].music;
+            bgMusic.load();
+            bgMusic.play().then(() => {
+                bgMusic.pause();
+            }).catch(e => console.warn("Ses kilidi uyarısı (Önemsiz):", e));
+            // ===============================
+
             startScreen.style.opacity = '0';
             
             setTimeout(() => {
