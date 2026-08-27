@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
+    <!-- FAVICON EKLENDİ -->
+    <link rel="icon" type="image/jpeg" href="beyzicın.jpg">
+    
     <title>İyi ki Doğdun Beyza</title>
 
     <style>
@@ -104,7 +107,6 @@
             padding: 15px;
         }
         
-        /* ÇÖZÜM: Medya kırpılmasını engelleyen yapı */
         .media-item {
             max-width: 90%; 
             max-height: 85dvh;
@@ -140,7 +142,6 @@
             width: 90%;
         }
         
-        /* ⚜️ Desenleri CSS */
         .ornament {
             color: rgba(212, 175, 55, 0.3);
             font-size: 1.2rem;
@@ -161,7 +162,6 @@
             margin: 0 10px;
         }
 
-        /* Fotoğraf Sözleri CSS */
         .slide-text {
             font-family: "Georgia", serif;
             font-size: 1.5rem;
@@ -202,7 +202,7 @@
             background: radial-gradient(circle at center, #1a0f12 0%, #050304 100%);
             z-index: 850;
             display: none;
-            flex-direction: row; /* Dikeyden yataya geçirildi */
+            flex-direction: row; 
             opacity: 0;
             transition: opacity 1.5s ease;
         }
@@ -218,12 +218,11 @@
             position: relative;
         }
 
-        /* Mum Yazıları */
         #candle-texts {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 25px; /* Biraz aşağıya çekildi */
+            margin-top: 25px; 
         }
         .fast-reveal {
             opacity: 0;
@@ -236,10 +235,9 @@
         }
         .fast-reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Zarif Mum Çizimi */
         .candle-container {
             position: relative;
-            margin-top: 40px; /* Mum aşağıya çekildi */
+            margin-top: 40px; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -270,11 +268,11 @@
             100% { transform: translateX(-50%) scale(1.05) rotate(-2deg); opacity: 1; }
         }
 
-        /* ÇÖZÜM: Veda Yazıları - Ekranın tamamını kaplayacak ve tam ortaya gelecek */
+        /* VEDA YAZILARI VE DANS EDEN ÇİFT */
         #final-messages {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100dvh;
-            display: none; /* Mumu üfleyince flex olacak */
+            display: none; 
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -285,10 +283,38 @@
             font-size: 2.2rem;
             color: var(--gold);
             opacity: 0;
-            margin-bottom: 12px; /* Aralıklar daraltıldı, daha yukarıda/ortada duracak */
+            margin-bottom: 12px; 
             transition: opacity 0.8s ease;
             text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
             text-align: center;
+        }
+
+        /* Dans Eden Çift ve İmza Alanı */
+        .signature-block {
+            display: flex;
+            flex-direction: row; /* İsim ve görsel yan yana */
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* İsimle görsel arasındaki boşluk */
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .signature-text {
+            font-family: "Georgia", serif;
+            font-size: 1.4rem;
+            color: #a3a3a3;
+        }
+        .dancing-couple {
+            height: 70px; /* Telefonda sıkışmasını engeller */
+            width: auto;
+            opacity: 0.85;
+            animation: sway 4s infinite ease-in-out alternate;
+        }
+        /* Çifte romantik bir sallanma efekti */
+        @keyframes sway {
+            0% { transform: rotate(-5deg) translateY(0px); }
+            100% { transform: rotate(5deg) translateY(-5px); }
         }
     </style>
 </head>
@@ -315,7 +341,6 @@
     <!-- 4. MUM VE FİNAL -->
     <div id="candle-screen">
         
-        <!-- Sol Taraf: Mum Yazıları -->
         <div class="candle-left">
             <div id="candle-texts">
                 <div class="fast-reveal" id="c-text-1">Ve şimdi...</div>
@@ -324,7 +349,6 @@
             </div>
         </div>
 
-        <!-- Sağ Taraf: Mum -->
         <div class="candle-right">
             <div class="candle-container" id="candle-box">
                 <div class="candle-flame" id="flame"></div>
@@ -338,7 +362,13 @@
             <div class="final-text" id="f-text-1">İyi ki doğdun sevgilim.</div>
             <div class="final-text" id="f-text-2">İyi ki varsın.</div>
             <div class="final-text" id="f-text-3">Seni çok seviyorum. ❤️</div>
-            <div class="final-text" id="f-text-4" style="font-size: 1.2rem; color: #a3a3a3; margin-top: 30px;">— Onur</div>
+            
+            <!-- Dans Eden Çift ve İmza (Onur) -->
+            <div class="signature-block" id="f-text-4">
+                <div class="signature-text">— Onur</div>
+                <!-- Buraya klasöründeki dans eden gif veya png gelecek -->
+                <img src="dans.gif" alt="Dans Eden Çift" class="dancing-couple" onerror="this.style.display='none'">
+            </div>
         </div>
         
     </div>
@@ -346,13 +376,9 @@
     <script>
         /* =========================================================================
            ================= YAZILARI BURADAN DEĞİŞTİR =============================
-           Aşağıdaki 'text:' kısımlarının içindeki metinleri kendi istediğin 
-           sözlerle dilediğin gibi değiştirebilirsin. Tırnak işaretlerini (" ") 
-           silmemeye dikkat et.
            ========================================================================= */
         
         const slideData = [
-            // --- 1. BÖLÜM (Foto 1-7 | Müzik 1 Çalar) ---
             { type: 'image', src: 'foto1.jpg', music: 'muzik1.mp3', text: 'Bilmiyordum ama o gün attığım mesaj, hayatımın en güzel başlangıçlarından biriymiş.' },
             { type: 'image', src: 'foto2.jpg', music: 'muzik1.mp3', text: 'İlk buluşmamızın küçücük bir hatırası, benim için kocaman bir anıya dönüştü.' },
             { type: 'image', src: 'foto3.jpg', music: 'muzik1.mp3', text: 'Sana verdiğim her çiçekte, sana olan sevgimin birazını anlatmaya çalışıyorum.' },
@@ -361,7 +387,6 @@
             { type: 'image', src: 'foto6.jpg', music: 'muzik1.mp3', text: 'Seninle sıradan bir şeyi bile beraber yaptığımızda, benim için güzel bir anıya dönüşüyor"' },
             { type: 'image', src: 'foto7.jpg', music: 'muzik1.mp3', text: 'Belki küçük bir kaktüs, ama arkasında beraber geçirdiğimiz güzel bir an var. ❤️' },
             
-            // --- 2. BÖLÜM (Ara Video & Foto 8-15 | Müzik 1 Çalar) ---
             { type: 'video', src: 'video1.mp4', music: 'muzik1.mp3', text: 'Sen benim en güzel tesadüfüm, en kıymetli kararımsın...' },
             
             { type: 'image', src: 'foto8.jpg', music: 'muzik1.mp3', text: 'Senin en güzel hallerinden biri de hiçbir şeyden habersiz, kendi halinde mutlu olduğun anlar.' },
@@ -373,7 +398,6 @@
             { type: 'image', src: 'foto14.jpg', music: 'muzik1.mp3', text: 'Sana her yaklaştığımda dünyadaki bütün sesler biraz olsun susuyor gibi.' },
             { type: 'image', src: 'foto15.jpg', music: 'muzik1.mp3', text: 'Ve bu fotoğraf... Bizim hikâyemizin en güzel karelerinden biri. Daha nice fotoğrafa, nice anıya, nice ‘biz’lere. ❤️' },
             
-            // --- 3. BÖLÜM (Son Video | Müzik 1 Çalar) ---
             { type: 'video', src: 'video2.mp4', music: 'muzik1.mp3', text: 'Ve bu hikaye daha yeni başlıyor sevgilim...' }
         ];
         /* ========================================================================= */
@@ -402,15 +426,12 @@
         /* BAŞLATMA */
         startBtn.addEventListener('click', () => {
             
-            // === MOBİL SES KİLİDİ ÇÖZÜMÜ ===
-            // Telefonlarda müziğin otomatik başlaması için, kullanıcı butona 
-            // tıkladığı an sesi yükleyip çok kısa tetikliyoruz (kilidi kırıyoruz).
+            // Ses kilidini kır
             bgMusic.src = slideData[0].music;
             bgMusic.load();
             bgMusic.play().then(() => {
                 bgMusic.pause();
-            }).catch(e => console.warn("Ses kilidi uyarısı (Önemsiz):", e));
-            // ===============================
+            }).catch(e => console.warn("Ses kilidi uyarısı:", e));
 
             startScreen.style.opacity = '0';
             
@@ -451,7 +472,6 @@
         function renderSlide(index) {
             const data = slideData[index];
             
-            // Müzik kontrol
             if (data.music !== currentMusic) {
                 bgMusic.src = data.music;
                 const mPromise = bgMusic.play();
@@ -461,7 +481,6 @@
                 currentMusic = data.music;
             }
 
-            // Medya Yükleme (Foto/Video)
             mediaContainer.innerHTML = ''; 
             let mediaEl;
             
@@ -484,7 +503,6 @@
             }
             mediaContainer.appendChild(mediaEl);
 
-            // Yazı ve ⚜️ Desenlerini Yükleme
             textContainer.innerHTML = ''; 
             
             const textWrapper = document.createElement('div');
@@ -508,7 +526,6 @@
             textWrapper.appendChild(botOrn);
             textContainer.appendChild(textWrapper);
 
-            // Tıklayarak Geç Yazısı
             const skipHint = document.createElement('div');
             skipHint.className = 'skip-hint';
             skipHint.textContent = 'Geçmek için ekrana dokun 〉';
@@ -534,7 +551,6 @@
             }
         }
 
-        // Tıklayınca 15 Saniye beklemeden hemen geç (Skip)
         slideshowScreen.addEventListener('click', () => {
             clearInterval(slideInterval);
             nextSlide();
@@ -548,7 +564,7 @@
             slideshowScreen.style.opacity = '0';
             setTimeout(() => {
                 slideshowScreen.style.display = 'none';
-                candleScreen.style.display = 'flex'; // Yatay moda geçer
+                candleScreen.style.display = 'flex'; 
                 
                 setTimeout(() => candleScreen.style.opacity = '1', 100);
                 
@@ -563,19 +579,15 @@
         flame.addEventListener('click', () => {
             flame.style.display = 'none'; 
             
-            // Mum ve sağdaki-soldaki yazıları şeffaflaştır
             document.querySelector('.candle-left').style.opacity = '0';
             document.querySelector('.candle-right').style.opacity = '0';
 
-            // Arka planı iyice karanlık yap
             candleScreen.style.background = "radial-gradient(circle, #100a0b 0%, #050304 100%)";
 
             setTimeout(() => {
-                // Her şeyi ekrandan kaldır
                 document.querySelector('.candle-left').style.display = 'none';
                 document.querySelector('.candle-right').style.display = 'none';
                 
-                // Final veda yazılarını tüm ekranı kaplayacak şekilde aç
                 const finalMsgs = document.getElementById('final-messages');
                 finalMsgs.style.display = 'flex';
                 
